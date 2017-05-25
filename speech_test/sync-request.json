@@ -1,0 +1,10 @@
+{
+	"config": {
+		"encoding": "FLAC",
+		"sampleRateHertz": 16000,
+		"languageCode": "en-US"
+	}, 
+	"audio": {
+		"uri":"gs://gaongil_speech/my-voice.flac"
+	}
+}
