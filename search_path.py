@@ -72,7 +72,7 @@ def main() :
     endStation = ms.start_method()
     print('-----------------############################-----------------------------------------------------------'+endStation)    
     # Load API Key 
-    f = open('./apikey', 'r')
+    f = open('./.apikey', 'r')
     apikey = str(f.read())[:-1]
     f.close()
 

@@ -26,10 +26,10 @@ pygame.init()
 screen = pygame.display.set_mode((1080, 720), FULLSCREEN | DOUBLEBUF)
  
 # 이미지 파일을 로딩
-img = pygame.image.load('image.jpg')
+img = pygame.image.load('deprecated/image.jpg')
  
 # 폰트 로딩 및 텍스트 객체 초기화
-fontObj = pygame.font.Font('HUDaku.ttf', 32)
+fontObj = pygame.font.Font('font/HUDaku.ttf', 32)
 textSurfaceObj = fontObj.render('Hello Font!', True, GREEN)
 textRectObj = textSurfaceObj.get_rect();
 textRectObj.center = (150, 200)
