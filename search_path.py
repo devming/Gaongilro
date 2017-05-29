@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import mic_streaming as ms
 import requests as req
 import json
 
@@ -66,8 +66,11 @@ def readPrefNextStationData(apikey, textFormat, apiName, startPage, endPage, sta
 
 def main() :
     startStation = input('Enter the start station - ')      # Set this value to specific station each device.
-    endStation = input('Enter the end station - ')     # Microphone destination input
+#    endStation = input('Enter the end station - ')     # Microphone destination input
 
+    print('목적지를 말하세요.')
+    endStation = ms.start_method()
+    print('-----------------############################-----------------------------------------------------------'+endStation)    
     # Load API Key 
     f = open('./apikey', 'r')
     apikey = str(f.read())[:-1]
@@ -91,8 +94,8 @@ def main() :
     prevStationName = data[0]
     nextStationName = data[1]
     
-    print ("Prev Station : " + prevStationName)
-    print ("Next Station : " + nextStationName)
+    print ("Left Station : " + prevStationName)
+    print ("Right Station : " + nextStationName)
 
 if __name__ == "__main__":
     main()

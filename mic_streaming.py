@@ -38,6 +38,7 @@ CHUNK = 1024
 DEADLINE_SECS = 10# * 3 + 5
 SPEECH_SCOPE = 'https://www.googleapis.com/auth/cloud-platform'
 
+destination = ''
 
 def _audio_data_generator(buff):
     while True:
@@ -145,7 +146,7 @@ def listen_print_loop(recognize_stream):
                 complete_word = complete_word[:-1]
             
             print('End! ' + complete_word)       
-            return
+            return complete_word
 
         if any(re.search(r'\b(exit|quit)\b', alt.transcript, re.I)
                for result in resp.results
@@ -155,9 +156,10 @@ def listen_print_loop(recognize_stream):
 
 def parsing_korean(c1, c2, c3, c4):
     word = '0b'+c1+c2+c3+c4
-    return unichr(int(word,2))
+    return chr(int(word,2))
        
-def main():
+#def main():
+def start_method():
     credentials = get_credentials()
     credentials = google.auth.credentials.with_scopes_if_required(
             credentials, [SPEECH_SCOPE])
@@ -169,12 +171,14 @@ def main():
         signal.signal(signal.SIGINT, lambda *_: recognize_stream.cancel())
         try:
             print(recognize_stream)
-            listen_print_loop(recognize_stream)
+            destination = listen_print_loop(recognize_stream)
             recognize_stream.cancel()
         except Exception as ex:
             print(str(ex))
 
+        return destination
 
-if __name__ == '__main__':
-    main()
+
+#if __name__ == '__main__':
+#    main()
 
