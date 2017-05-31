@@ -26,8 +26,10 @@ pygame.init()
 screen = pygame.display.set_mode((1080, 720), FULLSCREEN | DOUBLEBUF)
  
 # 이미지 파일을 로딩
-img = pygame.image.load('deprecated/image.jpg')
- 
+#img = pygame.image.load('images/image.jpg')
+rightArrow = pygame.image.load('images/arrow.png') 
+rightRedArrow = pygame.image.load('images/arrow_red.png')
+
 # 폰트 로딩 및 텍스트 객체 초기화
 fontObj = pygame.font.Font('font/HUDaku.ttf', 32)
 textSurfaceObj = fontObj.render('Hello Font!', True, GREEN)
@@ -36,21 +38,22 @@ textRectObj.center = (150, 200)
 
 # 사운드 파일을 로딩
 #soundObj = pygame.mixer.Sound('music.mp3')
- 
-# 메인 루프
-while True:
-  for event in pygame.event.get():
-    # 이벤트를 처리하는 부분
-    if event.type == QUIT:
-      pygame.quit()
-      sys.exit()
+
+def main(): 
+  # 메인 루프
+  while True:
+    for event in pygame.event.get():
+      # 이벤트를 처리하는 부분
+      if event.type == QUIT:
+          pygame.quit()
+        sys.exit()
  
     # 키보드 이벤트 처리
-    if event.type == KEYDOWN:
-      if event.key == K_ESCAPE:
-        exit()
+      if event.type == KEYDOWN:
+        if event.key == K_ESCAPE:
+          exit()
         # 오른쪽 키가 눌리면 사운드를 플레이한다
-    #    soundObj.play()
+      #    soundObj.play()
  
     # 마우스 이벤트 처리
     if event.type == MOUSEBUTTONDOWN and event.button == LEFT:
@@ -71,7 +74,7 @@ while True:
  
   screen.fill(BLACK)  # 화면을 검은색으로 지운다
  
-  pygame.draw.line(screen, GREEN, (10, 0), (20, 10))  # 두 점을 지나는 선을 그린다
+  pygame.draw.rect(screen, GREEN, pygame.Rect(10, 0, 20, 10)) # 두 점을 지나는 선을 그린다
  
   # 수동으로 점 찍기
   pixelArray = pygame.PixelArray(screen)
@@ -80,20 +83,36 @@ while True:
   del pixelArray
  
   # 이미지 파일 그리기
-  screen.blit(img, (50, 100))
+#  screen.blit(img, (50, 100))
   
+  screen.blit(rightArrow, (250, 40))
+  screen.blit(rightRedArrow, (50, 40))
+
   # 이미지 파일 회전하여 그리기
-  x = 200
-  y = 100
-  degree = 30
-  rotated = pygame.transform.rotate(img, degree)
-  rect = rotated.get_rect()
-  rect.center = (x, y)
-  screen.blit(rotated, rect)
+  x = 70
+  y = 50
+  degree = 0
+  deploy_arrow(x, y, rightArrow, degree)
+  degree = 180
+  deploy_arrow(x, y, rightRedArrow, degree)
+#  rotated = pygame.transform.rotate(img, degree)
+#  rect = rotated.get_rect()
+#  rect.center = (x, y)
+#  screen.blit(rotated, rect)
  
+
   # 텍스트 오브젝트를 출력
   screen.blit(textSurfaceObj, textRectObj)
  
   pygame.display.flip()  # 화면 전체를 업데이트
   clock.tick(TARGET_FPS)  # 프레임 수 맞추기
 
+
+def deploy_arrow(x, y, img, degree):
+  rotated = pygame.transform.rotate(img, degree)  
+  rect = rotated.get_rect()
+  rect.center = (x, y)
+  screen.blit(rotated, rect)
+
+if __name__ == "__main__":
+    main()
