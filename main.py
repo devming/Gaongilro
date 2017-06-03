@@ -75,8 +75,8 @@ def get_current_station():
   return currentStation
 
 def text_objects(text, color):
-  textSurface = font.render(text, True, color)
-  return textSurface, textxSurface.get_rect()
+  textSurface = fontObj.render(text, True, color)
+  return textSurface, textSurface.get_rect()
 
 def message_to_screen(msg, color):
   textSurf, textRect = text_objects(msg, color)
