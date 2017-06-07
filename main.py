@@ -26,7 +26,10 @@ textInputPointLine = (500, 250)
 textPointDirection = (350, 323) #direction
 textInputPointDirection = (500, 300)
 
-
+# input flags
+curFlag = True
+lineFlag = False
+directionFlag = False
 
 # 라이브러리 및 디스플레이 초기화
 pygame.init()
@@ -39,20 +42,28 @@ screen = pygame.display.set_mode((screenWidth, screenHeight), FULLSCREEN | DOUBL
 fontObj = pygame.font.Font("font/D2Coding.ttc", 32)
 
 # Create TextInput-object
-curStationTextinput = pygame_textinput.TextInput()
-curStationTextinput.font_family = "font/D2Coding.ttc"
+#curStationTextinput = pygame_textinput.TextInput()
+#curStationTextinput.font_family = "font/D2Coding.ttc"
+#lineTextinput = pygame_textinput.TextInput()
+#lineTextinput.font_family = "font/D2Coding.ttc"
+#directionTextinput = pygame_textinput.TextInput()
+#directionTextinput.font_family = "font/D2Coding.ttc"
 
-directionTextinput = pygame_textinput.TextInput()
-directionTextinput.font_family = "font/D2Coding.ttc"
+textinput = pygame_textinput.TextInput()
+textinput.font_family = "font/D2Coding.ttc"
 
-lineTextinput = pygame_textinput.TextInput()
-lineTextinput.font_family = "font/D2Coding.ttc"
+# 다음으로 넘길 전역 변수
+currentStation = '' # 다음역
+line = 0 # 호선
+direction = -1 #방향(상행=1, 하행=0)
 
-# 사운드 파일을 로딩
-#soundObj = pygame.mixer.Sound('music.mp3')
-currentStation = ''
+# guide 메시지
+textMsg = ''
 
 def main(): 
+  curFlag = True
+  lineFlag = False
+  directionFlag = False
   # 메인 루프
   while True:
     events = pygame.event.get()
@@ -68,24 +79,40 @@ def main():
         if event.key == K_ESCAPE:
           exit()
         if event.key == K_RETURN:
-          currentStation = curStationTextinput.get_text()
-
+          if curFlag:
+            currentStation = textinput.get_text()
+            curFlag = False
+            lineFlag = True
+            textinput.input_string = ''
+          elif lineFlag:
+            line = int(textinput.get_text())
+            lineFlag = False
+            directionFlag = True
+            textinput.input_string = ''
+          elif directionFlag:
+            direction = int(textinput.get_text())
+            directionFlag = False
+            textinput.input_string = ''
+            #TODO: 다음 화면으로 넘어갈 로직 짜기
+            
+        
       if event.type == MOUSEBUTTONDOWN and event.button == LEFT:
-        exit()
-
-    
+        exit() #end of line for loop...
 
     screen.fill(BLACK)  # 화면을 검은색으로 지운다
  
-    # Feed it with events every frame
-#    curStationTextinput.update(events)
-    # Blit its surface onto the screen
-    render_text(events)
-#    screen.blit(curStationTextinput.get_surface(), (500, 200))
+    # custom 메소드 호출, textinput 그려준다.
+    render_text(events)			# 100 line
 
     # 텍스트 오브젝트를 출력
-    message_to_screen('현재 역 이름: ', WHITE, 350, 223)
-    message_to_screen(curStationTextinput.get_text(), WHITE, 350, 373)
+    if curFlag:
+      textMsg = '현재역: '
+    elif lineFlag:
+      textMsg = '호선: '
+    elif directionFlag:
+      textMsg = '하행=0,상행=1: '
+
+    message_to_screen(textMsg, WHITE, textPointCurStation)
  
     pygame.display.flip()  # 화면 전체를 업데이트
     clock.tick(TARGET_FPS)  # 프레임 수 맞추기
@@ -97,21 +124,25 @@ def text_objects(text, color):
   textSurface = fontObj.render(text, True, color)
   return textSurface, textSurface.get_rect()
 
-def message_to_screen(msg, color, x, y):
+def message_to_screen(msg, color, p):
   textSurf, textRect = text_objects(msg, color)
-  textRect.center = (x, y)
+  textRect.center = (p[0], p[1])
   screen.blit(textSurf, textRect)
 
 def render_text(events):
   # Feed it with events every frame
-  curStationTextinput.update(events)
-  lineTextinput.update(events)
-  directionTextinput.update(events)
+  textinput.update(events)
+
+  # 점 찍힐 위치 설정 
+  if curFlag:
+    point = textInputPointCurStation
+  elif lineFlag:
+    point = textInputPointLine
+  elif directionFlag: 
+    point = textInputPointDirection
 
   # Blit its surface onto the screen
-  screen.blit(curStationTextinput.get_surface(), textPointCurStation)
-  screen.blit(lineTextinput.get_surface(), textPointLine)
-  screen.blit(directionTextinput.get_surface(), textPointDirection)
+  screen.blit(textinput.get_surface(), point)
 
 if __name__ == "__main__":
   main()
