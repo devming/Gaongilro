@@ -158,8 +158,7 @@ def parsing_korean(c1, c2, c3, c4):
     word = '0b'+c1+c2+c3+c4
     return chr(int(word,2))
        
-#def main():
-def start_method():
+def main():
     credentials = get_credentials()
     credentials = google.auth.credentials.with_scopes_if_required(
             credentials, [SPEECH_SCOPE])
@@ -179,6 +178,6 @@ def start_method():
         return destination
 
 
-#if __name__ == '__main__':
-#    main()
+if __name__ == '__main__':
+    main()
 

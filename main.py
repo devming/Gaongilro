@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
- 
+import os 
 import sys
 import pygame
 import pygame_textinput
@@ -19,12 +19,12 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
  
 # 텍스트 좌표
-textPointCurStation = (350, 223) #현재 역
-textInputPointCurStation = (500, 200)
-textPointLine = (350, 273) #호선
-textInputPointLine = (500, 250)
-textPointDirection = (350, 323) #direction
-textInputPointDirection = (500, 300)
+textPointCurStation = (350, 823) #현재 역
+textInputPointCurStation = (500, 1000)
+textPointLine = (350, 873) #호선
+textInputPointLine = (500, 100)
+textPointDirection = (350, 923) #direction
+textInputPointDirection = (500, 1000)
 
 # input flags
 curFlag = True
@@ -34,9 +34,9 @@ directionFlag = False
 # 라이브러리 및 디스플레이 초기화
 pygame.init()
 
-screenWidth = 1680
-screenHeight = 1080
-screen = pygame.display.set_mode((screenWidth, screenHeight), FULLSCREEN | DOUBLEBUF)
+screenWidth = 1900#1680
+screenHeight = 1024#1080
+screen = pygame.display.set_mode((screenHeight, screenWidth), FULLSCREEN | DOUBLEBUF)
  
 # 폰트 로딩 및 텍스트 객체 초기화
 fontObj = pygame.font.Font("font/D2Coding.ttc", 32)
@@ -78,7 +78,7 @@ def main():
       if event.type == KEYDOWN:
         if event.key == K_ESCAPE:
           exit()
-        if event.key == K_RETURN:
+        if event.key == K_RETURN:          
           if curFlag:
             currentStation = textinput.get_text()
             curFlag = False
@@ -110,7 +110,7 @@ def main():
     elif lineFlag:
       textMsg = '호선: '
     elif directionFlag:
-      textMsg = '하행=0,상행=1: '
+      textMsg = '우측=상행선이면 1 아니면 0: '
 
     message_to_screen(textMsg, WHITE, textPointCurStation)
  
