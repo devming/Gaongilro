@@ -2,9 +2,11 @@
 import mic_streaming as ms
 import requests as req
 import json
-import main_page as mp
 
 jsonDataPath = {}
+
+LEFT = 1
+RIGHT = 2
 
 def readShortestData(apikey, textFormat, apiName, startPage, endPage, startStation, endStation):
     SEARCH_BASE ="http://swopenapi.seoul.go.kr/api/subway/"
@@ -65,14 +67,11 @@ def readPrefNextStationData(apikey, textFormat, apiName, startPage, endPage, sta
         nextStationName = 'empty'
     return prevStationName + '/' + nextStationName
 
-def main() : #TODO: startStation, lineNumber, direction 데이터 가져오기 mainPage에서 getInformation() 구현하기.
-
-    startStation = input('Enter the start station - ')      # Set this value to specific station each device.
+#def main() :
+#    startStation = input('Enter the start station - ')      # Set this value to specific station each device.
 #    endStation = input('Enter the end station - ')     # Microphone destination input
-    startStation, lineNumber, direction = mp.getInformation()
-    
-
-    print('목적지를 말하세요.')
+def speak_destination(startStation, line, direction):
+    print('목적지를 말하세요.')#TODO: sound로 대체
     endStation = ms.start_method()
     print('-----------------############################-----------------------------------------------------------'+endStation)    
     # Load API Key 
@@ -100,8 +99,9 @@ def main() : #TODO: startStation, lineNumber, direction 데이터 가져오기 m
     
     print ("Left Station : " + prevStationName)
     print ("Right Station : " + nextStationName)
+    return LEFT
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()
 
 
