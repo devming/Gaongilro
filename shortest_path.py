@@ -2,6 +2,7 @@
 import mic_streaming as ms
 import requests as req
 import json
+import threading
 
 jsonDataPath = {}
 
@@ -67,12 +68,23 @@ def readPrefNextStationData(apikey, textFormat, apiName, startPage, endPage, sta
         nextStationName = 'empty'
     return prevStationName + '/' + nextStationName
 
+#class MicThread(threading.Thread):
+#    destinationT = ''
+#    def get_destination():
+#        return destinationT
+#    def run(self):
+#        destinationT = ms.start_method()
+
+
 #def main() :
 #    startStation = input('Enter the start station - ')      # Set this value to specific station each device.
 #    endStation = input('Enter the end station - ')     # Microphone destination input
 def speak_destination(startStation, line, direction):
     print('목적지를 말하세요.')#TODO: sound로 대체
     endStation = ms.start_method()
+#     speak = MicThread()
+#    speak.start()
+    
     print('-----------------############################-----------------------------------------------------------'+endStation)    
     # Load API Key 
     f = open('./.apikey', 'r')
@@ -99,8 +111,13 @@ def speak_destination(startStation, line, direction):
     
     print ("Left Station : " + prevStationName)
     print ("Right Station : " + nextStationName)
-    return LEFT
+#TODO: previd, nexitd 입력!
+    if nextStationName == stationNameList[1]:
+        return RIGHT
+    else:
+        return LEFT
 
+#speak_destination('성균관대', 1, 2)
 #if __name__ == "__main__":
 #    main()
 

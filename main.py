@@ -6,6 +6,7 @@ import pygame_textinput
 import shortest_path as sp
 import json
 from pygame.locals import *
+import threading 
 
 # 초당 프레임수를 정의
 TARGET_FPS = 30
@@ -22,7 +23,6 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
- 
 
 # 라이브러리 및 디스플레이 초기화
 pygame.init()
@@ -32,12 +32,14 @@ screenHeight = 1024#1080
 screen = pygame.display.set_mode((screenHeight, screenWidth), FULLSCREEN | DOUBLEBUF)
  
 # 텍스트 좌표
-textPointCurStation = (screenHeight/2, 100) # 현재 역 550
-textPointNextStation = (150, 300) # next
-textPointPrevStation = (950, 300) # prev
+textPointCurStation = (565, 100) # 현재 역 550
+textPointCurStaNumber = (348, 100) # 현재 역 550
+textPointPrevStation = (320, 400) # prev
+textPointNextStation = (710, 400) # next
 
 # 폰트 로딩 및 텍스트 객체 초기화
-fontObj = pygame.font.Font("font/D2Coding.ttc", 128)
+fontObj = pygame.font.Font("font/D2Coding.ttc", 80)
+fontMediumObj = pygame.font.Font("font/D2Coding.ttc", 56)
 fontSmallObj = pygame.font.Font("font/D2Coding.ttc", 32)
 
 fp = open('datas/data.json', 'r')
@@ -48,7 +50,10 @@ initStation = initData["curStation"]
 initLine = initData["line"]
 initDirection = initData["direction"]
 
+prevStation = '의왕'
+nextStation = '화서'
 
+isShown = False
 def main(): 
   # 메인 루프
   direction = MIDDLE
@@ -69,29 +74,28 @@ def main():
 
         elif event.key == K_p:
           direction = RIGHT
-        elif event.key == K_q:        
+        elif event.key == K_q:
           direction = LEFT
         elif event.key == K_m:
+          isShown = True
           direction = sp.speak_destination(initStation, initLine, initDirection)
         else:
           direction = MIDDLE
-        
-
-    if direction == LEFT:
-      render_go_left_image()
-    elif direction == RIGHT:
-      render_go_right_image()
-      
+    ################ Handle Events ###################    
+    start_timer()
+    
+    
  
     # custom 메소드 호출, textinput 그려준다.
 #    render_text(events)			# 100 line
 
    
 #    render_arrow()
-
-    message_to_screen(load_cur_text(), WHITE, textPointCurStation, True)
-    message_to_screen(load_next_text(), WHITE, textPointNextStation, False)
-    message_to_screen(load_prev_text(), WHITE, textPointPrevStation, False)
+    render_base_images();
+    message_to_screen(initStation, WHITE, textPointCurStation, 0)
+    message_to_screen(nextStation, WHITE, textPointNextStation, 2)
+    message_to_screen(prevStation, WHITE, textPointPrevStation, 2)
+    message_to_screen("153", WHITE, textPointCurStaNumber, 1)
  
     pygame.display.flip()  # 화면 전체를 업데이트
     clock.tick(TARGET_FPS)  # 프레임 수 맞추기
@@ -107,23 +111,40 @@ def get_image(path, angle):
     _image_library[path] = image
   return pygame.transform.rotate(image, angle)
 
-leftArrow = (25, 600)
-rightArrow = (625, 600)
-middleMic = (250, 600)
-
+leftArrow = (100, 600)
 leftAngle = 0
+rightArrow = (709, 600)
 rightAngle = 180
+middleMic = (250, 600)
+#posCircle = (screenHeight/2, screenWidth/2)
+
+
+posBlank = (300, 50)
+posStationName = (230, 220)
+posCircle = (230, 320)
+posTellDestination = (330, 450)
+posMic = (479, 615)
+
 def render_go_right_image():
-  screen.blit(get_image('images/arrow.png', leftAngle), leftArrow)
-  screen.blit(get_image('images/arrow_red.png', rightAngle), rightArrow)
+  screen.blit(get_image('images/gray.png', leftAngle), leftArrow)
+  screen.blit(get_image('images/red.png', rightAngle), rightArrow)
 
 def render_go_left_image():
-  screen.blit(get_image('images/arrow_red.png', leftAngle), leftArrow)
-  screen.blit(get_image('images/arrow.png', rightAngle), rightArrow)
+  screen.blit(get_image('images/red.png', leftAngle), leftArrow)
+  screen.blit(get_image('images/gray.png', rightAngle), rightArrow)
 
-def text_objects(text, color, isCurrent):
-  if isCurrent:
+def render_base_images():
+  screen.blit(get_image('images/blank_circle.png', 0), posBlank)
+  screen.blit(get_image('images/sta_name.png', 0), posStationName)
+  screen.blit(get_image('images/circle.png', 0), posCircle)
+  screen.blit(get_image('images/text_tell_destination.png', 0), posTellDestination)
+  screen.blit(get_image('images/mic.png', 0), posMic)
+
+def text_objects(text, color, size):	#size는 작을수록 크다.
+  if size == 0:
     textSurface = fontObj.render(text, True, color)
+  elif size == 1:
+    textSurface = fontMediumObj.render(text, True, color)
   else:
     textSurface = fontSmallObj.render(text, True, color)
   return textSurface, textSurface.get_rect()
@@ -133,17 +154,22 @@ def message_to_screen(msg, color, p, isCurrent):
   textRect.center = (p[0], p[1])
   screen.blit(textSurf, textRect)
 
-def load_cur_text():
-  textMsg = '사당'
-  return textMsg
+count = 0
+def start_timer():
+  global count
+  count += 1
+  timer=threading.Timer(1, start_timer)
+  timer.start()
+  
+  if direction == LEFT:
+    render_go_left_image()
+  elif direction == RIGHT:
+    render_go_right_image()
 
-def load_next_text():
-  textMsg = '낙성대'
-  return textMsg
 
-def load_prev_text():
-  textMsg = '방배'
-  return textMsg
+  if count == 5:
+    isShown = False
+    timer.cancel()
 
 if __name__ == "__main__":
   main()
