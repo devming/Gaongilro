@@ -75,8 +75,7 @@ def readPrefNextStationData(apikey, textFormat, apiName, startPage, endPage, sta
 #    def run(self):
 #        destinationT = ms.start_method()
 
-
-#def main() :
+#def main():
 #    startStation = input('Enter the start station - ')      # Set this value to specific station each device.
 #    endStation = input('Enter the end station - ')     # Microphone destination input
 def speak_destination(startStation, line, direction):
@@ -85,7 +84,7 @@ def speak_destination(startStation, line, direction):
 #     speak = MicThread()
 #    speak.start()
     
-    print('-----------------############################-----------------------------------------------------------'+endStation)    
+    print('-----------------############################-----------------------------------------------------------'+endStation)  
     # Load API Key 
     f = open('./.apikey', 'r')
     apikey = str(f.read())[:-1]
@@ -120,5 +119,3 @@ def speak_destination(startStation, line, direction):
 #speak_destination('성균관대', 1, 2)
 #if __name__ == "__main__":
 #    main()
-
-

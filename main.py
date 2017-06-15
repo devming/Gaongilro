@@ -53,10 +53,13 @@ initDirection = initData["direction"]
 prevStation = '의왕'
 nextStation = '화서'
 
+direction = MIDDLE
 isShown = False
 def main(): 
   # 메인 루프
-  direction = MIDDLE
+  global isShown
+  global direction
+  
   while True:
     events = pygame.event.get()
 
@@ -78,12 +81,22 @@ def main():
           direction = LEFT
         elif event.key == K_m:
           isShown = True
+          direction = MIDDLE
           direction = sp.speak_destination(initStation, initLine, initDirection)
         else:
           direction = MIDDLE
     ################ Handle Events ###################    
-    start_timer()
+    #start_timer()
     
+    if isShown and (direction != MIDDLE):
+      timer=threading.Timer(1, start_timer)
+      timer.start()
+      isShown = False
+
+#    if direction == LEFT:
+#      render_go_left_image()
+#    elif direction == RIGHT:
+#      render_go_right_image()
     
  
     # custom 메소드 호출, textinput 그려준다.
@@ -158,17 +171,15 @@ count = 0
 def start_timer():
   global count
   count += 1
-  timer=threading.Timer(1, start_timer)
-  timer.start()
   
   if direction == LEFT:
     render_go_left_image()
   elif direction == RIGHT:
     render_go_right_image()
 
-
   if count == 5:
     isShown = False
+    count = 0
     timer.cancel()
 
 if __name__ == "__main__":
