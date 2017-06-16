@@ -152,7 +152,8 @@ def listen_print_loop(recognize_stream):
                for result in resp.results
                for alt in result.alternatives):
             print('Exiting..')
-            break
+            return '404'
+#            break
 
 def parsing_korean(c1, c2, c3, c4):
     word = '0b'+c1+c2+c3+c4
@@ -169,11 +170,13 @@ def start_method():
         requests = request_stream(buffered_audio_data, RATE)
         recognize_stream = service.StreamingRecognize(requests)
         signal.signal(signal.SIGINT, lambda *_: recognize_stream.cancel())
+        destination = ''
         try:
             print(recognize_stream)
             destination = listen_print_loop(recognize_stream)
             recognize_stream.cancel()
         except Exception as ex:
+            destination = '404'
             print(str(ex))
 
         

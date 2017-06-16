@@ -110,7 +110,8 @@ def speak_destination(startStation, line, direction):
     
     print ("Left Station : " + prevStationName)
     print ("Right Station : " + nextStationName)
-#TODO: previd, nexitd 입력!
+#TODO 1: previd, nexitd 입력!
+#TODO 2: prevStationName, nextStationName이 항상 종각, 종로5가로 나옴
     if nextStationName == stationNameList[1]:
         return RIGHT
     else:

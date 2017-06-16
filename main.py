@@ -9,7 +9,7 @@ from pygame.locals import *
 import threading 
 
 # 초당 프레임수를 정의
-TARGET_FPS = 30
+TARGET_FPS = 5
  
 clock = pygame.time.Clock()
  
@@ -29,7 +29,7 @@ pygame.init()
 
 screenWidth = 1900#1680
 screenHeight = 1024#1080
-screen = pygame.display.set_mode((screenHeight, screenWidth), FULLSCREEN | DOUBLEBUF)
+screen = pygame.display.set_mode((screenHeight, screenWidth))#, FULLSCREEN | DOUBLEBUF)
  
 # 텍스트 좌표
 textPointCurStation = (565, 100) # 현재 역 550
@@ -55,6 +55,7 @@ nextStation = '화서'
 
 direction = MIDDLE
 isShown = False
+
 def main(): 
   # 메인 루프
   global isShown
@@ -81,7 +82,6 @@ def main():
           direction = LEFT
         elif event.key == K_m:
           isShown = True
-          direction = MIDDLE
           direction = sp.speak_destination(initStation, initLine, initDirection)
         else:
           direction = MIDDLE
@@ -89,14 +89,13 @@ def main():
     #start_timer()
     
     if isShown and (direction != MIDDLE):
-      timer=threading.Timer(1, start_timer)
-      timer.start()
       isShown = False
+      start_timer()
 
-#    if direction == LEFT:
-#      render_go_left_image()
-#    elif direction == RIGHT:
-#      render_go_right_image()
+    if direction == LEFT:
+      render_go_left_image()
+    elif direction == RIGHT:
+      render_go_right_image()
     
  
     # custom 메소드 호출, textinput 그려준다.
@@ -170,16 +169,19 @@ def message_to_screen(msg, color, p, isCurrent):
 count = 0
 def start_timer():
   global count
+  global direction
+
   count += 1
   
-  if direction == LEFT:
-    render_go_left_image()
-  elif direction == RIGHT:
-    render_go_right_image()
+  print(str(count)+ ":direction-" + str(direction))
+  timer=threading.Timer(1, start_timer)
 
-  if count == 5:
-    isShown = False
+
+  if count < 5:
+    timer.start()
+  else :
     count = 0
+    direction = MIDDLE
     timer.cancel()
 
 if __name__ == "__main__":
